@@ -5,4 +5,6 @@
 3. Analisar logs
 4. Validar conectividade de rede
 5. Comunicar equipe responsável
+6. Registrar raiz
+7. Documentar solução aplicada
 
