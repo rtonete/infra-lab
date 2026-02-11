@@ -1,8 +1,14 @@
 services:
   web1:
     image: nginx
+    restart: unless-stopped
     volumes:
       - ./web1:/usr/share/nginx/html
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   web2:
     image: nginx
@@ -18,3 +24,8 @@ services:
     depends_on:
       - web1
       - web2
+  
+  testeapp:
+    image: ubuntu
+    command: ["bash", "-c", "while true; do sleep 30; done"]
+    restart: unless-stopped
