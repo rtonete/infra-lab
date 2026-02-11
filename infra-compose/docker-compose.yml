@@ -1,7 +1,13 @@
+networks:
+  frontend:
+  backend:
+
 services:
   web1:
     image: nginx
     restart: unless-stopped
+    networks:
+      - backend
     volumes:
       - ./web1:/usr/share/nginx/html
     healthcheck:
@@ -14,9 +20,13 @@ services:
     image: nginx
     volumes:
       - ./web2:/usr/share/nginx/html
-
+    networks:
+      - backend
   proxy:
     image: nginx
+    networks:
+      - frontend
+      - backend
     ports:
       - "80:80"
     volumes:
@@ -25,7 +35,7 @@ services:
       - web1
       - web2
   
-  testeapp:
-    image: ubuntu
-    command: ["bash", "-c", "while true; do sleep 30; done"]
-    restart: unless-stopped
+  #testeapp:
+  #  image: ubuntu
+  #  command: ["bash", "-c", "while true; do sleep 30; done"]
+  #  restart: unless-stopped
