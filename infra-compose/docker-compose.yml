@@ -4,7 +4,7 @@ networks:
 
 services:
   web1:
-    image: nginx
+    image: nginx:${APP_VERSION}
     restart: unless-stopped
     networks:
       - backend
@@ -17,13 +17,13 @@ services:
       retries: 3
 
   web2:
-    image: nginx
+    image: nginx${APP_VERSION}
     volumes:
       - ./web2:/usr/share/nginx/html
     networks:
       - backend
   proxy:
-    image: nginx
+    image: nginx${APP_VERSION}
     networks:
       - frontend
       - backend
