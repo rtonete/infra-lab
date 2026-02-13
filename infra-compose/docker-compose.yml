@@ -6,6 +6,11 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    healtcheck:
+        test: ["CMD", "wget", "-qO-", "http://localhost"]
+        interval: 10s
+        timeout: 3s
+        retries: 5
 
   proxy:
     image: nginx:1.25-alpine

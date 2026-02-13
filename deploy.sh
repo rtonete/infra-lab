@@ -59,21 +59,25 @@ deploy() {
 }
 
 # ====== HEALTHCHECK ======
-healthcheck() {
-  log "Validando saúde da aplicação via namespace do proxy"
+wait_for_health() {
+  log "Aguardando containers ficarem saudáveis"
 
-  local start_time
-  start_time=$(date +%s)
+  local timeout=60
+  local start_time=$(date +%s)
 
   while true; do
-    if docker exec infra-compose-proxy-1 \
-      wget -qO- http://localhost/web1/ >/dev/null 2>&1; then
-      log "Aplicação saudável (proxy respondeu)"
+    STATUS=$(docker inspect \
+      --format='{{.State.Health.Status}}' \
+      infra-compose-app-1 2>/dev/null || echo "starting")
+
+    if [ "$STATUS" = "healthy" ]; then
+      log "Aplicação saudável (Docker reportou healthy)"
       break
     fi
 
-    if (( $(date +%s) - start_time > TIMEOUT )); then
-      error "Healthcheck falhou após ${TIMEOUT}s"
+    if (( $(date +%s) - start_time > timeout )); then
+      error "Container não ficou saudável após ${timeout}s"
+      docker compose ps
       exit 1
     fi
 
@@ -88,7 +92,7 @@ main() {
   check_dependencies
   save_current_version
   deploy
-  healthcheck
+  wait_for_health
   update_version
 	
   log "Deploy finalizado com sucesso"
