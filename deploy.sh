@@ -1,6 +1,18 @@
 
 #!/usr/bin/env bash
 
+# ====== CARREGA VARIAVEIS ======
+ENV_FILE="infra-compose/.env"
+
+if [ ! -f "$ENV_FILE" ]; then
+  error "Arquivo $ENV_FILE não encontrado"
+  exit 1
+fi
+
+set -a
+source "$ENV_FILE"
+set +a
+
 CURRENT_VERSION_FILE=".current_version"
 set -Eeuo pipefail
 
