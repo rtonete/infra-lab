@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   app:
-    image: infra-lab:${APP_VERSION}
+    image: rtonete/infra-lab:${APP_VERSION}
     restart: unless-stopped
     networks:
       - backend
