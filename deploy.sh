@@ -60,18 +60,15 @@ deploy() {
 
 # ====== HEALTHCHECK ======
 healthcheck() {
-  log "Validando saúde da aplicação via container utilitário"
+  log "Validando saúde da aplicação via namespace do proxy"
 
   local start_time
   start_time=$(date +%s)
 
   while true; do
-    if docker run --rm \
-      --network infra-compose_backend \
-      curlimages/curl:8.7.1 \
-      --connect-timeout 5 \
-      http://proxy >/dev/null 2>&1; then
-      log "Aplicação saudável"
+    if docker exec infra-compose-proxy-1 \
+      wget -qO- http://localhost/web1/ >/dev/null 2>&1; then
+      log "Aplicação saudável (proxy respondeu)"
       break
     fi
 
@@ -83,6 +80,7 @@ healthcheck() {
     sleep 5
   done
 }
+
 # ====== MAIN ======
 main() {
   log "Iniciando deploy de $APP_NAME"
