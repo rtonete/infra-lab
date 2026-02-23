@@ -1,6 +1,6 @@
 FROM nginx:1.25-alpine
 
-COPY infra-compose/web1 /usr/share/nginx/html
+COPY infra-compose/app /usr/share/nginx/html
 
 EXPOSE 80
 
